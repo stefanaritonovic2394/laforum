@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Channel;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -16,15 +17,12 @@ class CreateThreadsTest extends TestCase
     /** @test */
     public function guests_cannot_create_threads()
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        $thread = make(Thread::class);
-        $this->post('/threads', $thread->toArray());
-    }
+        $this->withExceptionHandling();
 
-    /** @test */
-    public function guests_cannot_see_create_thread_page()
-    {
         $this->get('/threads/create')
+            ->assertRedirect('/login');
+
+        $this->post('/threads')
             ->assertRedirect('/login');
     }
 
@@ -34,10 +32,46 @@ class CreateThreadsTest extends TestCase
         $this->signIn();
 
         $thread = make(Thread::class);
-        $this->post('/threads', $thread->toArray());
 
-        $this->get('/threads/'. $thread->id)
+        $response = $this->post('/threads', $thread->toArray());
+
+        $this->get($response->headers->get('Location'))
             ->assertSee($thread->title)
             ->assertSee($thread->body);
+    }
+
+    /** @test */
+    public function a_thread_requires_a_title()
+    {
+        $this->publishThread(['title' => null])
+            ->assertSessionHasErrors('title');
+    }
+
+    /** @test */
+    public function a_thread_requires_a_body()
+    {
+        $this->publishThread(['body' => null])
+            ->assertSessionHasErrors('body');
+    }
+
+    /** @test */
+    public function a_thread_requires_a_channel()
+    {
+        factory(Channel::class, 2)->create();
+
+        $this->publishThread(['channel_id' => null])
+            ->assertSessionHasErrors('channel_id');
+
+        $this->publishThread(['channel_id' => 999])
+            ->assertSessionHasErrors('channel_id');
+    }
+
+    public function publishThread($overrides = [])
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $thread = make(Thread::class, $overrides);
+
+        return $this->post('/threads', $thread->toArray());
     }
 }

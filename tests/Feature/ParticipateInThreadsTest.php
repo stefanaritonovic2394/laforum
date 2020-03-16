@@ -17,22 +17,33 @@ class ParticipateInThreadsTest extends TestCase
     /** @test */
     public function unauthenticated_users_cannot_add_replies()
     {
-        $this->expectException('Illuminate\Auth\AuthenticationException');
-        $this->post('/threads/1/replies', []);
+        $this->withExceptionHandling()
+            ->post('/threads/some-channel/1/replies', [])
+            ->assertRedirect('/login');
     }
 
     /** @test */
     public function an_authenticated_user_can_participate_in_threads()
     {
-        $user = create(User::class);
-        $this->be($user);
+        $this->signIn();
 
         $thread = create(Thread::class);
-
         $reply = make(Reply::class);
-        $this->post('/threads/'. $thread->id .'/replies', $reply->toArray());
 
-        $this->get('/threads/'. $thread->id)
+        $this->post($thread->path() . '/replies', $reply->toArray());
+
+        $this->get($thread->path())
             ->assertSee($reply->body);
+    }
+
+    public function a_reply_requires_a_body()
+    {
+        $this->withExceptionHandling()->signIn();
+
+        $thread = create(Thread::class);
+        $reply = make(Reply::class, ['body' => null]);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertSessionHasErrors('body');
     }
 }
