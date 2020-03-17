@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Filters\ThreadFilters;
 use App\Thread;
 use App\User;
 use Illuminate\Http\Request;
@@ -21,22 +22,16 @@ class ThreadController extends Controller
      * Display a listing of the resource.
      *
      * @param Channel $channel
+     * @param ThreadFilters $filters
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(Channel $channel)
+    public function index(Channel $channel, ThreadFilters $filters)
     {
-        if ($channel->exists) {
-            $threads = $channel->threads()->latest();
-        } else {
-            $threads = Thread::latest();
-        }
+        $threads = $this->getThreads($channel, $filters);
 
-        if ($username = request('by')) {
-            $user = User::where('name', $username)->firstOrFail();
-            $threads->where('user_id', $user->id);
+        if (request()->wantsJson()) {
+            return $threads;
         }
-
-        $threads = $threads->get();
 
         return view('threads.index', compact('threads'));
     }
@@ -84,8 +79,10 @@ class ThreadController extends Controller
      */
     public function show($channelId, Thread $thread)
     {
-        $channel = Channel::all();
-        return view('threads.show', compact('thread', 'channel'));
+        return view('threads.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies()->paginate(1)
+        ]);
     }
 
     /**
@@ -120,5 +117,21 @@ class ThreadController extends Controller
     public function destroy(Thread $thread)
     {
         //
+    }
+
+    /**
+     * @param Channel $channel
+     * @param ThreadFilters $filters
+     * @return mixed
+     */
+    protected function getThreads(Channel $channel, ThreadFilters $filters)
+    {
+        $threads = Thread::latest()->filter($filters);
+
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        return $threads->get();
     }
 }
