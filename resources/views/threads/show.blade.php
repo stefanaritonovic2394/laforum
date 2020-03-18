@@ -22,15 +22,17 @@
                 {{ $replies->links() }}
 
                 @if(auth()->check())
-                    <form method="POST" action="{{ $thread->path() . '/replies' }}">
-                        @csrf
-                        <div class="form-group">
-                            <textarea name="body" id="body" cols="10" rows="5" class="form-control" placeholder="Have something to say?"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block">Post</button>
-                    </form>
+                    <div class="mt-4">
+                        <form method="POST" action="{{ $thread->path() . '/replies' }}">
+                            @csrf
+                            <div class="form-group">
+                                <textarea name="body" id="body" cols="10" rows="5" class="form-control" placeholder="Have something to say?"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Post</button>
+                        </form>
+                    </div>
                 @else
-                    <p class="text-center">Please <a href="{{ route('login') }}">login</a> to participate in this discussion</p>
+                    <p class="text-center mt-2">Please <a href="{{ route('login') }}">login</a> to participate in this discussion</p>
                 @endif
             </div>
 
