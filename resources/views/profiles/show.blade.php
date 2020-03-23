@@ -2,32 +2,36 @@
 
 @section('content')
     <div class="container">
-        <div class="card-header">
-            <h1>
-                {{ $profileUser->name }}
-                <small>Since {{ $profileUser->created_at->diffForHumans() }}</small>
-            </h1>
-        </div>
-
-        @foreach($threads as $thread)
-            <div class="card mt-3">
+        <div class="row">
+            <div class="col-md-8 offset-2">
                 <div class="card-header">
-                    <div class="level">
-                        <span class="flex">
-                            <a href="#">{{ $thread->creator->name }}</a> posted:
-                            {{ $thread->title }}
-                        </span>
+                    <h1>
+                        {{ $profileUser->name }}
+                        <small>Since {{ $profileUser->created_at->diffForHumans() }}</small>
+                    </h1>
+                </div>
 
-                        <span>{{ $thread->created_at->diffForHumans() }}</span>
+                @foreach($threads as $thread)
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <div class="level">
+                                <span class="flex">
+                                    <a href="{{ route('profile.show', $thread->creator) }}">{{ $thread->creator->name }}</a> posted:
+                                    <a href="{{ $thread->path() }}">{{ $thread->title }}</a>
+                                </span>
+
+                                <span>{{ $thread->created_at->diffForHumans() }}</span>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            {{ $thread->body }}
+                        </div>
                     </div>
-                </div>
+                @endforeach
 
-                <div class="card-body">
-                    {{ $thread->body }}
-                </div>
+                {{ $threads->links() }}
             </div>
-        @endforeach
-
-        {{ $threads->links() }}
+        </div>
     </div>
 @endsection
