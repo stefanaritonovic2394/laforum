@@ -52,7 +52,7 @@ class ReplyController extends Controller
             'user_id' => auth()->id()
         ]);
 
-        return back()->with('flash', 'You left a reply');
+        return back()->with('flash', 'Your reply has been left');
     }
 
     /**
@@ -80,23 +80,31 @@ class ReplyController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Reply  $reply
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  \App\Reply $reply
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+
+        $reply->update(request(['body']));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Reply  $reply
+     * @param  \App\Reply $reply
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Reply $reply)
     {
-        //
+        $this->authorize('update', $reply);
+
+        $reply->delete();
+
+        return back();
     }
 }
