@@ -3,8 +3,11 @@
 </template>
 
 <script>
+    import Favorite from './Favorite.vue';
+
     export default {
         props: ['attributes'],
+        components: { Favorite },
         name: "Reply",
         data() {
             return {
@@ -22,6 +25,13 @@
                 this.editing = false;
 
                 flash('Reply updated');
+            },
+
+            destroy() {
+                axios.delete('/replies/' + this.attributes.id);
+                $(this.$el).fadeOut(300, () => {
+                    flash('Reply deleted');
+                });
             }
         }
     }

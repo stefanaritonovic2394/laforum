@@ -1,4 +1,4 @@
-<reply :attributes="{{ $reply }}" inline-template>
+<reply :attributes="{{ $reply }}" inline-template v-cloak>
     <div id="reply-{{ $reply->id }}" class="card mt-4 mb-4">
         <div class="card-header">
             <div class="level">
@@ -8,14 +8,11 @@
                     </a> said {{ $reply->created_at->diffForHumans() }}
                 </h6>
 
-                <div class="">
-                    <form method="POST" action="/replies/{{ $reply->id }}/favorites">
-                        @csrf
-                        <button type="submit" class="btn btn-primary" {{ $reply->isFavorited() ? 'disabled' : '' }}>
-                            {{ $reply->favorites_count }} {{ str_plural('Favorite', $reply->favorites_count) }}
-                        </button>
-                    </form>
-                </div>
+                @if(Auth::check())
+                    <div class="">
+                        <favorite :reply="{{ $reply }}"></favorite>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -32,13 +29,15 @@
 
         @can('update', $reply)
             <div class="card-footer level">
-                <button type="" class="btn btn-secondary btn-sm mr-3" @click="editing = true">Edit</button>
-                <form method="POST" action="/replies/{{ $reply->id }}">
-                    @csrf
-                    @method('DELETE')
+                <button class="btn btn-secondary btn-sm mr-3" @click="editing = true">Edit</button>
+                <button class="btn btn-danger btn-sm mr-3" @click="destroy">Delete</button>
 
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
+                {{--<form method="POST" action="/replies/{{ $reply->id }}">--}}
+                    {{--@csrf--}}
+                    {{--@method('DELETE')--}}
+
+                    {{--<button type="submit" class="btn btn-danger btn-sm">Delete</button>--}}
+                {{--</form>--}}
             </div>
         @endcan
     </div>
