@@ -36,3 +36,5 @@ Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store')->nam
 Route::post('/replies/{reply}/favorites', 'FavoriteController@store');
 Route::delete('/replies/{reply}/favorites', 'FavoriteController@destroy');
 Route::get('/profiles/{user}', 'ProfileController@show')->name('profile.show');
+Route::get('/profiles/{user}/notifications', 'UserNotificationController@index');
+Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationController@destroy');
