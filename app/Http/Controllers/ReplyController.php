@@ -23,7 +23,7 @@ class ReplyController extends Controller
      */
     public function index($channelId, Thread $thread)
     {
-        return $thread->replies()->paginate(2);
+        return $thread->replies()->paginate(10);
     }
 
     /**
