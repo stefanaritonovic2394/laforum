@@ -68,7 +68,7 @@ class ParticipateInThreadsTest extends TestCase
     {
         $this->signIn();
 
-        $reply = create(Reply::class, ['user_id' => auth()->id]);
+        $reply = create(Reply::class, ['user_id' => auth()->id()]);
 
         $this->delete("/replies/{$reply->id}")->assertStatus(302);
 
@@ -96,7 +96,7 @@ class ParticipateInThreadsTest extends TestCase
     {
         $this->signIn();
 
-        $reply = create(Reply::class, ['user_id' => auth()->id]);
+        $reply = create(Reply::class, ['user_id' => auth()->id()]);
 
         $updatedReply = 'Updated body';
         $this->patch("/replies/{$reply->id}", ['body' => $updatedReply]);

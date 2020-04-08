@@ -13,6 +13,7 @@ class ProfilesTest extends TestCase
 {
     use DatabaseMigrations;
 
+    /** @test */
     public function a_user_has_a_profile()
     {
         $user = create(User::class);
@@ -21,6 +22,7 @@ class ProfilesTest extends TestCase
             ->assertSee($user->name);
     }
 
+    /** @test */
     public function display_all_threads_on_profile_created_by_the_user()
     {
         $this->signIn();

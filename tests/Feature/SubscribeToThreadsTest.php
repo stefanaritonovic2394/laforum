@@ -31,7 +31,7 @@ class SubscribeToThreadsTest extends TestCase
 
         $thread = create(Thread::class);
 
-        $thread->subsribe();
+        $thread->subscribe();
 
         $this->delete($thread->path() . '/subscriptions');
 

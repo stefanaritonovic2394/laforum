@@ -6,6 +6,7 @@
         <cache>
           <versions>
             <info id="Local" version="8.5.2" />
+            <info id="interpreter-2b404f02-6110-4815-9616-06d1455e4bdc" version="8.5.2" />
           </versions>
         </cache>
       </tool>
