@@ -8,11 +8,13 @@ use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class ParticipateInThreadsTest extends TestCase
 {
     use DatabaseMigrations;
+    use WithoutMiddleware;
 
     /** @test */
     public function unauthenticated_users_cannot_add_replies()
@@ -115,8 +117,25 @@ class ParticipateInThreadsTest extends TestCase
             'body' => 'Yahoo Customer Support'
         ]);
 
-        $this->expectException(\Exception::class);
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
+    }
 
-        $this->post($thread->path() . '/replies', $reply->toArray());
+    /** @test */
+    public function users_can_only_reply_once_per_minute()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $reply = make(Reply::class, [
+            'body' => 'My simple reply'
+        ]);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(200);
+
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertStatus(422);
     }
 }

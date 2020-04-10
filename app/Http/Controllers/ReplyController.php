@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Reply;
-use App\Inspections\Spam;
+use App\Rules\SpamFree;
 use App\Thread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ReplyController extends Controller
 {
@@ -40,14 +41,19 @@ class ReplyController extends Controller
     /**
      * Store a newly created resource in storage.
      *
+     * @param Request $request
      * @param $channelId
      * @param Thread $thread
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
      */
-    public function store($channelId, Thread $thread)
+    public function store(Request $request, $channelId, Thread $thread)
     {
+        if (Gate::denies('create', new Reply)) {
+            return response('You are posting too often. Please take a break.', 422);
+        }
+
         try {
-            $this->validateReply();
+            $request->validate(['body' => ['required', new SpamFree()]]);
 
             $reply = $thread->addReply([
                 'body' => request('body'),
@@ -95,7 +101,8 @@ class ReplyController extends Controller
         $this->authorize('update', $reply);
 
         try {
-            $this->validateReply();
+            $request->validate(['body' => ['required', new SpamFree()]]);
+
             $reply->update(request(['body']));
         } catch (\Exception $e) {
             return response('Sorry, your reply couldn\'t be updated at this time.', 422);
@@ -121,13 +128,6 @@ class ReplyController extends Controller
         }
 
         return back();
-    }
-
-    public function validateReply()
-    {
-        $this->validate(request(), ['body' => 'required']);
-
-        resolve(Spam::class)->detect(request('body'));
     }
 
 }
