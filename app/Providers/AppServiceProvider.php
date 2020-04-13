@@ -32,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+//        View::share('channels', Channel::all());
+
         View::composer('*', function ($view) {
             $channels = Cache::rememberForever('channels', function () {
                return Channel::all();

@@ -14,7 +14,6 @@ use Tests\TestCase;
 class ParticipateInThreadsTest extends TestCase
 {
     use DatabaseMigrations;
-    use WithoutMiddleware;
 
     /** @test */
     public function unauthenticated_users_cannot_add_replies()
@@ -117,13 +116,15 @@ class ParticipateInThreadsTest extends TestCase
             'body' => 'Yahoo Customer Support'
         ]);
 
-        $this->post($thread->path() . '/replies', $reply->toArray())
+        $this->json('post', $thread->path() . '/replies', $reply->toArray())
             ->assertStatus(422);
     }
 
     /** @test */
     public function users_can_only_reply_once_per_minute()
     {
+        $this->withExceptionHandling();
+
         $this->signIn();
 
         $thread = create(Thread::class);
