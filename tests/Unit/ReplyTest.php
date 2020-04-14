@@ -35,10 +35,20 @@ class ReplyTest extends TestCase
     /** @test */
     public function it_can_detect_all_mentioned_users()
     {
-        $reply = create(Reply::class, [
+        $reply = new Reply([
             'body' => '@Marija wants to talk to @Marko'
         ]);
 
         $this->assertEquals(['Marija', 'Marko'], $reply->mentionedUsers());
+    }
+
+    /** @test */
+    public function it_wraps_mentioned_usernames_in_the_body_within_anchor_tags()
+    {
+        $reply = new Reply([
+            'body' => 'Hey @Marija.'
+        ]);
+
+        $this->assertEquals('Hey <a href="/profiles/Marija">@Marija</a>.', $reply->body);
     }
 }

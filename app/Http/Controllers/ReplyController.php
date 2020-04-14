@@ -44,7 +44,7 @@ class ReplyController extends Controller
      * @param $channelId
      * @param Thread $thread
      * @param CreatePostRequest $form
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
@@ -88,13 +88,9 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        try {
-            $request->validate(['body' => ['required', new SpamFree()]]);
+        $request->validate(['body' => ['required', new SpamFree()]]);
 
-            $reply->update(request(['body']));
-        } catch (\Exception $e) {
-            return response('Sorry, your reply couldn\'t be updated at this time.', 422);
-        }
+        $reply->update(request(['body']));
     }
 
     /**

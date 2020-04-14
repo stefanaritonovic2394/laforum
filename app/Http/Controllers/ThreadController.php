@@ -55,7 +55,7 @@ class ThreadController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $request->validate([
             'title' => ['required', new SpamFree()],
             'body' => ['required', new SpamFree()],
             'channel_id' => 'required|exists:channels,id'
@@ -117,7 +117,7 @@ class ThreadController extends Controller
      *
      * @param $channel
      * @param  \App\Thread $thread
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\Response|\Illuminate\Routing\Redirector
      * @throws \Exception
      */
     public function destroy($channel, Thread $thread)
