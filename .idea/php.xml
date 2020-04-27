@@ -10,11 +10,8 @@
       <path value="$PROJECT_DIR$/vendor/phpunit/php-text-template" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-file-iterator" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-timer" />
-      <path value="$PROJECT_DIR$/vendor/paragonie/random_compat" />
       <path value="$PROJECT_DIR$/vendor/phpunit/php-token-stream" />
       <path value="$PROJECT_DIR$/vendor/fzaninotto/faker" />
-      <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-color" />
-      <path value="$PROJECT_DIR$/vendor/jakub-onderka/php-console-highlighter" />
       <path value="$PROJECT_DIR$/vendor/fruitcake/laravel-cors" />
       <path value="$PROJECT_DIR$/vendor/opis/closure" />
       <path value="$PROJECT_DIR$/vendor/webmozart/assert" />
@@ -101,12 +98,15 @@
       <path value="$PROJECT_DIR$/vendor/maximebf/debugbar" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-debugbar" />
       <path value="$PROJECT_DIR$/vendor/symfony/debug" />
+      <path value="$PROJECT_DIR$/vendor/predis/predis" />
+      <path value="$PROJECT_DIR$/vendor/brick/math" />
+      <path value="$PROJECT_DIR$/vendor/ramsey/collection" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
     <interpreters>
       <interpreter id="2b404f02-6110-4815-9616-06d1455e4bdc" name="Remote PHP 7.4" home="vagrant://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data VAGRANT_FOLDER="$PROJECT_DIR$/../../Homestead" INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/vagrant/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" />
+        <remote_data INTERPRETER_PATH="/usr/bin/php" HELPERS_PATH="/home/vagrant/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" VAGRANT_FOLDER="$PROJECT_DIR$/../../Homestead" />
       </interpreter>
     </interpreters>
   </component>
