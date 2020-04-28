@@ -22,26 +22,34 @@ class CreateThreadsTest extends TestCase
         $this->withExceptionHandling();
 
         $this->get('/threads/create')
-            ->assertRedirect('/login');
+            ->assertRedirect(route('login'));
 
-        $this->post('/threads')
-            ->assertRedirect('/login');
+        $this->post(route('threads.index'))
+            ->assertRedirect(route('login'));
     }
 
     /** @test */
-    public function authenticated_users_must_first_confirm_their_email_before_creating_threads()
+    public function new_users_must_first_confirm_their_email_before_creating_threads()
     {
-        $this->publishThread()->assertRedirect('/threads')->assertSessionHas('flash', 'You first need to confirm your email address');
+        $user = factory(User::class)->state('unconfirmed')->create();
+
+        $this->signIn($user);
+
+        $thread = make(Thread::class);
+
+        $this->post(route('threads.index'), $thread->toArray())
+            ->assertRedirect(route('threads.index'))
+            ->assertSessionHas('flash', 'You first need to confirm your email address');
     }
 
     /** @test */
-    public function an_authenticated_user_can_create_new_threads()
+    public function a_user_can_create_new_threads()
     {
         $this->signIn();
 
         $thread = make(Thread::class);
 
-        $response = $this->post('/threads', $thread->toArray());
+        $response = $this->post(route('threads.index'), $thread->toArray());
 
         $this->get($response->headers->get('Location'))
             ->assertSee($thread->title)
@@ -75,6 +83,24 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
+    public function a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class, ['title' => 'Foo Title', 'slug' => 'foo-title']);
+
+        $this->assertEquals('foo-title', $thread->fresh()->slug);
+
+        $this->post(route('threads.index'), $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-2')->exists());
+
+        $this->post(route('threads.index'), $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('foo-title-3')->exists());
+    }
+
+    /** @test */
     public function authorized_users_can_delete_threads()
     {
         $this->signIn();
@@ -100,7 +126,7 @@ class CreateThreadsTest extends TestCase
 
         $thread = create(Thread::class);
 
-        $this->delete($thread->path())->assertRedirect('/login');
+        $this->delete($thread->path())->assertRedirect(route('login'));
 
         $this->signIn();
         $this->delete($thread->path())->assertStatus(403);
@@ -112,6 +138,6 @@ class CreateThreadsTest extends TestCase
 
         $thread = make(Thread::class, $overrides);
 
-        return $this->post('/threads', $thread->toArray());
+        return $this->post(route('threads.index'), $thread->toArray());
     }
 }
