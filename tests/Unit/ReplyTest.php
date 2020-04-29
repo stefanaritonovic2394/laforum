@@ -51,4 +51,16 @@ class ReplyTest extends TestCase
 
         $this->assertEquals('Hey <a href="/profiles/Marija">@Marija</a>.', $reply->body);
     }
+
+    /** @test */
+    public function it_knows_if_its_the_best_reply()
+    {
+        $reply = create(Reply::class);
+
+        $this->assertFalse($reply->isBest());
+
+        $reply->thread->update(['best_reply_id' => $reply->id]);
+
+        $this->assertTrue($reply->fresh()->isBest());
+    }
 }

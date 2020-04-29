@@ -55,7 +55,7 @@ class ThreadController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\Contracts\Routing\ResponseFactory
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
@@ -70,9 +70,12 @@ class ThreadController extends Controller
             'user_id' => auth()->id(),
             'channel_id' => request('channel_id'),
             'title' => request('title'),
-            'body' =>  request('body'),
-            'slug' => request('title')
+            'body' =>  request('body')
         ]);
+
+        if ($request->wantsJson()) {
+            return response($thread, 201);
+        }
 
         return redirect($thread->path())
             ->with('flash', 'Thread published successfully');
