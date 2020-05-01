@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
 Route::get('/', 'ThreadController@index')->name('threads.index');
 Route::get('/threads', 'ThreadController@index')->name('threads.index');
 Route::get('/threads/create', 'ThreadController@create')->name('threads.create');
@@ -27,16 +28,20 @@ Route::get('/threads/{channel}/{thread}', 'ThreadController@show')->name('thread
 Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy');
 Route::post('/threads', 'ThreadController@store')->middleware('must-be-confirmed')->name('threads.store');
 Route::get('/threads/{channel}', 'ThreadController@index');
+//Route::patch('/threads/{channel}/{thread}', 'ThreadController@update')->name('threads.update');
+Route::post('/locked-threads/{thread}', 'LockedThreadController@store')->name('locked-threads.store')->middleware('admin');
+Route::delete('/locked-threads/{thread}', 'LockedThreadController@destroy')->name('locked-threads.destroy')->middleware('admin');
+
+Route::get('/threads/{channel}/{thread}/replies', 'ReplyController@index');
+Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store')->name('replies.store');
 Route::patch('/replies/{reply}', 'ReplyController@update');
-Route::delete('/replies/{reply}', 'ReplyController@destroy');
+Route::delete('/replies/{reply}', 'ReplyController@destroy')->name('replies.destroy');
 
 Route::post('/replies/{reply}/best', 'BestReplyController@store')->name('best-replies.store');
 
 Route::post('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@store')->middleware('auth');
 Route::delete('/threads/{channel}/{thread}/subscriptions', 'ThreadSubscriptionController@destroy')->middleware('auth');
 //Route::resource('threads', 'ThreadController');
-Route::get('/threads/{channel}/{thread}/replies', 'ReplyController@index');
-Route::post('/threads/{channel}/{thread}/replies', 'ReplyController@store')->name('replies.store');
 
 Route::post('/replies/{reply}/favorites', 'FavoriteController@store');
 Route::delete('/replies/{reply}/favorites', 'FavoriteController@destroy');

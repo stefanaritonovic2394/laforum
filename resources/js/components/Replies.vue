@@ -1,12 +1,15 @@
 <template>
     <div>
         <div v-for="(reply, index) in items" v-bind:key="reply.id">
-            <reply :data="reply" @deleted="remove(index)"></reply>
+            <reply :reply="reply" @deleted="remove(index)"></reply>
         </div>
 
         <paginator :dataSet="dataSet" @changed="fetch"></paginator>
 
-        <new-reply @created="add"></new-reply>
+        <p class="mt-3" v-if="$parent.locked">
+            This thread has been locked. You can't leave more replies.
+        </p>
+        <new-reply @created="add" v-else></new-reply>
     </div>
 </template>
 

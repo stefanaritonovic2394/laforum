@@ -44,10 +44,14 @@ class ReplyController extends Controller
      * @param $channelId
      * @param Thread $thread
      * @param CreatePostRequest $form
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Http\Response
      */
     public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
+        if ($thread->locked) {
+            return response('Thread is locked', 422);
+        }
+
         return $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()
