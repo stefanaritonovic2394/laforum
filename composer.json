@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "ext-json": "*",
+        "algolia/algoliasearch-client-php": "^2.2",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "google/recaptcha": "^1.2",
@@ -17,6 +18,7 @@
         "kitetail/zttp": "^0.6.0",
         "laravel/framework": "^7.0",
         "laravel/helpers": "^1.2",
+        "laravel/scout": "^8.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "predis/predis": "^1.1"

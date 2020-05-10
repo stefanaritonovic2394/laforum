@@ -24,6 +24,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/', 'ThreadController@index')->name('threads.index');
 Route::get('/threads', 'ThreadController@index')->name('threads.index');
 Route::get('/threads/create', 'ThreadController@create')->name('threads.create');
+Route::get('/threads/search', 'SearchController@show')->name('searches.show');
 Route::get('/threads/{channel}/{thread}', 'ThreadController@show')->name('threads.show');
 Route::patch('/threads/{channel}/{thread}', 'ThreadController@update')->name('threads.update');
 Route::delete('/threads/{channel}/{thread}', 'ThreadController@destroy');
